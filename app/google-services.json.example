@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "560053893940",
+    "project_id": "g3-stagecheck",
+    "storage_bucket": "g3-stagecheck.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560053893940:android:a54bbe9045b42c72688361",
+        "android_client_info": {
+          "package_name": "mads.group3.stagecheck"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": INSERT_API_KEY
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
