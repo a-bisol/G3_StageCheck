@@ -10,7 +10,7 @@ import mads.group3.stagecheck.navigation.Screens
 @Composable
 fun ProfileScreen(navController: NavController) {
     Column{
-        Text("Placeholder Dash")
+        Text("Placeholder Profile")
         Button(onClick = {
             navController.navigate(Screens.DetailArtist.passArtistId(1))
         }) {

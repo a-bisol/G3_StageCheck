@@ -10,7 +10,7 @@ import mads.group3.stagecheck.navigation.Screens
 @Composable
 fun MapScreen(navController: NavController) {
     Column{
-        Text("Placeholder Dash")
+        Text("Placeholder Map")
         Button(onClick = {
             navController.navigate(Screens.DetailEvent.passEventId(12))
         }) {

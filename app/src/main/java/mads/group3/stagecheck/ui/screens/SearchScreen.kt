@@ -10,7 +10,7 @@ import mads.group3.stagecheck.navigation.Screens
 @Composable
 fun SearchScreen(navController: NavController) {
     Column {
-        Text("Placeholder Dash")
+        Text("Placeholder Search")
         Button(onClick = {
             navController.navigate(Screens.DetailEvent.passEventId(11))
         }) {

@@ -10,7 +10,7 @@ import mads.group3.stagecheck.navigation.Screens
 @Composable
 fun FavouritesScreen(navController: NavController) {
     Column{
-        Text("Placeholder Dash")
+        Text("Placeholder Favs")
         Button(onClick = {
             navController.navigate(Screens.DetailEvent.passEventId(13))
         }) {

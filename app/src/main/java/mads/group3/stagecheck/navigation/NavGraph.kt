@@ -45,7 +45,8 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = if (isAuthenticated) Screens.Main.Dash.route else Screens.Login.route
+        startDestination = if (isAuthenticated) Screens.Main.Dash.route else Screens.Login.route,
+        modifier = modifier
     ) {
         composable(Screens.Login.route) {
             AuthScreen(viewModel = authViewModel)

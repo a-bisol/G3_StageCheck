@@ -4,10 +4,12 @@ package mads.group3.stagecheck
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
@@ -25,6 +27,7 @@ import mads.group3.stagecheck.viewmodels.AuthViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             StageCheckTheme {
                 val authViewModel: AuthViewModel = viewModel()
@@ -46,7 +49,9 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         authViewModel = authViewModel,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .padding(horizontal = 8.dp)
                     )
                 }
             }
