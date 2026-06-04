@@ -1,20 +1,31 @@
 package mads.group3.stagecheck.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import mads.group3.stagecheck.navigation.Screens
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun MapScreen(navController: NavController) {
-    Column{
-        Text("Placeholder Map")
-        Button(onClick = {
-            navController.navigate(Screens.DetailEvent.passEventId(12))
-        }) {
-            Text("Go to Event 12")
-        }
+    val toronto = LatLng(43.6532, -79.3832)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(toronto, 12f)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .aspectRatio(1f)
+    ) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState
+        )
     }
 }

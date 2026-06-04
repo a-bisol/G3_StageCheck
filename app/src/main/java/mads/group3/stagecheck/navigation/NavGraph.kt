@@ -60,17 +60,17 @@ fun NavGraph(
 
         composable(
             route = Screens.DetailEvent.route,
-            arguments = listOf(navArgument("eventId") { type = NavType.IntType })
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val eventId = backStackEntry.arguments?.getInt("eventId") ?: -1
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
             EventDetailScreen(eventId = eventId, onBack = { navController.popBackStack() })
         }
 
         composable(
             route = Screens.DetailArtist.route,
-            arguments = listOf(navArgument("artistId") { type = NavType.IntType })
+            arguments = listOf(navArgument("artistId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val artistId = backStackEntry.arguments?.getInt("artistId") ?: -1
+            val artistId = backStackEntry.arguments?.getString("artistId") ?: ""
             ArtistDetailScreen(artistId = artistId, onBack = { navController.popBackStack() })
         }
     }

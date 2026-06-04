@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun EventDetailScreen(
-    eventId: Int,
+    eventId: String,
     onBack: () -> Unit
 ) {
     Column() {
