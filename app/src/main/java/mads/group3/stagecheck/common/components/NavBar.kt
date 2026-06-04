@@ -16,6 +16,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -26,7 +27,7 @@ import mads.group3.stagecheck.navigation.Screens
 *   Fix selected to not just be stuck on dash
 */
 @Composable
-fun NavBar(navController: NavController) {
+fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
     val items = remember {
         listOf(
             Screens.Main.Dash,
@@ -40,12 +41,11 @@ fun NavBar(navController: NavController) {
     val currentDestination = navController.currentBackStackEntryAsState().value
     val currentRoute = currentDestination?.destination?.route
 
-    NavigationBar {
+    NavigationBar(modifier = modifier) {
         items.forEach { screen ->
             val isSelected = currentRoute == screen.route
             NavigationBarItem(
-                selected = isSelected,
-                onClick = {
+                selected = isSelected, onClick = {
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
@@ -53,14 +53,12 @@ fun NavBar(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                },
-                icon = {
+                }, icon = {
                     Icon(
                         imageVector = getIconForScreen(screen, isSelected),
                         contentDescription = screen.subRoute
                     )
-                },
-                label = null
+                }, label = null
             )
         }
     }
