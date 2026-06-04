@@ -11,7 +11,7 @@ import mads.group3.stagecheck.navigation.Screens
 @Composable
 fun DashScreen(navController: NavController) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ReusableEventCard(
             imageUrl = null,
