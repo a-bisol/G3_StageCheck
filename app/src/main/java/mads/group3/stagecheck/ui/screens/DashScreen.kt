@@ -5,16 +5,23 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import mads.group3.stagecheck.common.components.ReusableEventCard
 import mads.group3.stagecheck.navigation.Screens
 
 @Composable
 fun DashScreen(navController: NavController) {
-    Column{
+    Column {
         Text("Placeholder Dash")
         Button(onClick = {
             navController.navigate(Screens.DetailEvent.passEventId(10))
         }) {
             Text("Go to Event 10")
         }
+        ReusableEventCard(
+            imageUrl = null,
+            headliner = "Emo Nite",
+            venue = "Sneaky Dees",
+            onClick = { /* Nothing ^-^ */ }
+        )
     }
 }
