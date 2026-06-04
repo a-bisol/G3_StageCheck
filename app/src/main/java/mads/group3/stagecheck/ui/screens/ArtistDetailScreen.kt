@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ArtistDetailScreen(
-    artistId: Int,
+    artistId: String,
     onBack: () -> Unit
 ) {
     Column() {

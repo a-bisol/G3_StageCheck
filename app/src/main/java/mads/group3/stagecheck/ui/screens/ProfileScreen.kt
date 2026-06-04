@@ -14,7 +14,7 @@ fun ProfileScreen(navController: NavController, authViewModel: AuthViewModel) {
     Column {
         Text("Placeholder Profile")
         Button(onClick = {
-            navController.navigate(Screens.DetailArtist.passArtistId(1))
+            navController.navigate(Screens.DetailArtist.passArtistId("1"))
         }) {
             Text("Go to Artist 1")
         }

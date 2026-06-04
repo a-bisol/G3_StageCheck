@@ -12,7 +12,7 @@ fun MapScreen(navController: NavController) {
     Column{
         Text("Placeholder Map")
         Button(onClick = {
-            navController.navigate(Screens.DetailEvent.passEventId(12))
+            navController.navigate(Screens.DetailEvent.passEventId("12"))
         }) {
             Text("Go to Event 12")
         }

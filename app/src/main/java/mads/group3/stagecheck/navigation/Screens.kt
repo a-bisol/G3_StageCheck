@@ -12,10 +12,10 @@ sealed class Screens(val route: String) {
     }
 
     object DetailEvent : Screens("event/{eventId}") {
-        fun passEventId(eventId: Int) = "event/$eventId"
+        fun passEventId(eventId: String) = "event/$eventId"
     }
 
     object DetailArtist : Screens("artist/{artistId}") {
-        fun passArtistId(artistId: Int) = "artist/$artistId"
+        fun passArtistId(artistId: String) = "artist/$artistId"
     }
 }

@@ -12,7 +12,7 @@ fun FavouritesScreen(navController: NavController) {
     Column{
         Text("Placeholder Favs")
         Button(onClick = {
-            navController.navigate(Screens.DetailEvent.passEventId(13))
+            navController.navigate(Screens.DetailEvent.passEventId("13"))
         }) {
             Text("Go to Event 13")
         }
