@@ -56,7 +56,7 @@ fun NavGraph(
         composable(Screens.Main.Search.route) { SearchScreen(navController) }
         composable(Screens.Main.Map.route) { MapScreen(navController) }
         composable(Screens.Main.Favourites.route) { FavouritesScreen(navController) }
-        composable(Screens.Main.Profile.route) { ProfileScreen(navController) }
+        composable(Screens.Main.Profile.route) { ProfileScreen(navController, authViewModel) }
 
         composable(
             route = Screens.DetailEvent.route,
