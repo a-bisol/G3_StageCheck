@@ -22,10 +22,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import mads.group3.stagecheck.navigation.Screens
 
-/* TODO
-*   Add icons for each tab (maybe remove label?)
-*   Fix selected to not just be stuck on dash
-*/
 @Composable
 fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
     val items = remember {
