@@ -56,9 +56,6 @@ data class Event(
     @PropertyName("localTime")
     val localTime: String? = null,  // HH:MM:SS
 
-    @PropertyName("dateTime")
-    val dateTime: String? = null,   // ISO 8601
-
     @PropertyName("status")
     val status: String? = null,
 

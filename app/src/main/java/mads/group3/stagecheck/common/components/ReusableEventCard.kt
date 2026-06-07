@@ -36,6 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun ReusableEventCard(
@@ -43,24 +45,28 @@ fun ReusableEventCard(
     headliner: String,
     venue: String,
     onClick: () -> Unit,
+    localDate: String? = null, // YYYY-MM-DD
+    localTime: String? = null, // HH:MM:SS
     modifier: Modifier = Modifier,
     cardBackgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
 ) {
+    val formattedDateTime = formatEventDateTime(localDate, localTime)
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = cardBackgroundColor
+        color = cardBackgroundColor,
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp),
+                .height(110.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                    .aspectRatio(0.8f, matchHeightConstraintsFirst = true)
                     .background(Color.LightGray)
                     .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
             ) {
@@ -78,7 +84,8 @@ fun ReusableEventCard(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = headliner,
@@ -109,6 +116,16 @@ fun ReusableEventCard(
                             fontSize = 14.sp
                         ),
                         maxLines = 1
+                    )
+                }
+
+                if (formattedDateTime != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = formattedDateTime,
+                        style = MaterialTheme.typography.bodySmall.copy(color = contentColor),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -142,6 +159,19 @@ fun ReusableEventCard(
     }
 }
 
+fun formatEventDateTime(dateStr: String?, timeStr: String?): String? {
+    if (dateStr == null || timeStr == null) return null
+    return try {
+        val combinedDateTime = "$dateStr $timeStr"
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("MMM dd ' @ ' hh:mm a", Locale.getDefault())
+        val dateTime = inputFormat.parse(combinedDateTime)
+        dateTime?.let { outputFormat.format(it) }
+    } catch (e: Exception) {
+        null
+    }
+}
+
 @Preview(showBackground = true, backgroundColor = 0xFF1A1A1A)
 @Composable
 fun ReusableEventCardPreview() {
@@ -156,6 +186,8 @@ fun ReusableEventCardPreview() {
                 imageUrl = null,
                 headliner = "Super Duper Long Titled Headlining Band",
                 venue = "Sneaky Dee's",
+                localDate = "2026-06-12",
+                localTime = "21:30:00",
                 onClick = {}
             )
         }
