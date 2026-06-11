@@ -1,17 +1,31 @@
 package mads.group3.stagecheck
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import mads.group3.stagecheck.common.components.BannerAd
+import mads.group3.stagecheck.common.components.NavBar
+import mads.group3.stagecheck.navigation.NavGraph
 import mads.group3.stagecheck.ui.theme.StageCheckTheme
+import mads.group3.stagecheck.viewmodels.AuthViewModel
+
+/* TODO
+*   Constrain edges to not bleed off the top of the phone
+*   Loading/splash screen to avoid glimpse of login?
+*/
+
+private val BottomBarHeight = 100.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +33,39 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StageCheckTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                val authViewModel: AuthViewModel = viewModel()
+                val navController = rememberNavController()
+                val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = currentBackStackEntry?.destination?.route
+
+                val isDetailScreen =
+                    currentRoute?.startsWith("event/") == true || currentRoute?.startsWith("artist/") == true
+                val uiState by authViewModel.uiState.collectAsStateWithLifecycle()
+                val isLoggedIn = uiState.currentUser != null
+
+                Scaffold(
+                    bottomBar = {
+                        when {
+                            isLoggedIn && !isDetailScreen -> NavBar(
+                                navController,
+                                modifier = Modifier.height(BottomBarHeight)
+                            )
+
+                            isLoggedIn && isDetailScreen -> BannerAd(
+                                modifier = Modifier.height(
+                                    BottomBarHeight
+                                )
+                            )
+                        }
+                    }
+                ) { _ ->
+                    NavGraph(
+                        navController = navController,
+                        authViewModel = authViewModel,
+                        modifier = Modifier
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    StageCheckTheme {
-        Greeting("Android")
     }
 }
