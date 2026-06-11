@@ -3,6 +3,7 @@ package mads.group3.stagecheck.ui.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -22,6 +23,7 @@ fun MapScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .aspectRatio(1f)
+            .statusBarsPadding()
     ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
