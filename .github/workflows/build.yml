@@ -26,6 +26,11 @@ jobs:
           FIREBASE_SECRET: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo "$FIREBASE_SECRET" > app/google-services.json
 
+      - name: Decode local.properties
+        env:
+          LOCAL_PROPERTIES_SECRET: ${{ secrets.LOCAL_PROPERTIES }}
+        run: echo "$LOCAL_PROPERTIES_SECRET" > local.properties
+
       - name: Grant exec permission for gradlew
         run: chmod +x gradlew
 
