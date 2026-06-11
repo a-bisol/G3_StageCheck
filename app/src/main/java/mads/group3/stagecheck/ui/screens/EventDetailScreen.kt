@@ -2,9 +2,9 @@ package mads.group3.stagecheck.ui.screens
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -48,11 +47,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import mads.group3.stagecheck.common.components.formatEventDateTime
 import mads.group3.stagecheck.models.Artist
 import mads.group3.stagecheck.models.Event
+import mads.group3.stagecheck.navigation.Screens
 import mads.group3.stagecheck.viewmodels.EventDetailViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -62,6 +63,7 @@ import java.util.Locale
 fun EventDetailScreen(
     eventId: String,
     onBack: () -> Unit,
+    navController: NavController,
     viewModel: EventDetailViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -124,7 +126,14 @@ fun EventDetailScreen(
                         event = event!!,
                         artists = artists,
                         onShareClick = { shareEvent(context, event!!) },
-                        onTicketClick = { event!!.ticketmasterUrl?.let { openUrl(context, it) } }
+                        onTicketClick = { event!!.ticketmasterUrl?.let { openUrl(context, it) } },
+                        onArtistClick = { artistId ->
+                            navController.navigate(
+                                Screens.DetailArtist.passArtistId(
+                                    artistId
+                                )
+                            )
+                        }
                     )
                 }
 
@@ -141,7 +150,8 @@ fun EventDetailContent(
     event: Event,
     artists: List<Artist>,
     onShareClick: () -> Unit,
-    onTicketClick: () -> Unit
+    onTicketClick: () -> Unit,
+    onArtistClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -192,7 +202,10 @@ fun EventDetailContent(
                     .height(120.dp)
             ) {
                 items(artists, key = { it.id }) { artist ->
-                    ArtistCard(artist = artist)
+                    ArtistCard(
+                        artist = artist,
+                        onClick = { onArtistClick(artist.id) }
+                    )
                 }
             }
         }
@@ -253,10 +266,15 @@ fun VenueDateSection(event: Event) {
 }
 
 @Composable
-fun ArtistCard(artist: Artist) {
+fun ArtistCard(
+    artist: Artist,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(100.dp)
+        modifier = Modifier
+            .width(100.dp)
+            .clickable { onClick() }
     ) {
         AsyncImage(
             model = artist.image3x2 ?: artist.image16x9,
@@ -326,6 +344,6 @@ fun shareEvent(context: Context, event: Event) {
 }
 
 fun openUrl(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
     context.startActivity(intent)
 }

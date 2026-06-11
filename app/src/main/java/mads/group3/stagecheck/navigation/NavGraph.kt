@@ -63,7 +63,11 @@ fun NavGraph(
             arguments = listOf(navArgument("eventId") { type = NavType.StringType })
         ) { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-            EventDetailScreen(eventId = eventId, onBack = { navController.popBackStack() })
+            EventDetailScreen(
+                eventId = eventId,
+                onBack = { navController.popBackStack() },
+                navController = navController
+            )
         }
 
         composable(
