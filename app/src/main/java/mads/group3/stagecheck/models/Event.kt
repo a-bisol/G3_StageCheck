@@ -6,7 +6,7 @@ import com.google.firebase.firestore.PropertyName
 
 data class Event(
     @DocumentId
-    val id: String = "",
+    val docId: String = "",
 
     @PropertyName("ticketmasterUrl")
     val ticketmasterUrl: String? = null,
@@ -19,9 +19,6 @@ data class Event(
 
     @PropertyName("subGenre")
     val subGenre: String? = null,
-
-    @PropertyName("artists")
-    val artists: List<EventArtist> = emptyList(),
 
     @PropertyName("artistIds")
     val artistIds: List<String> = emptyList(),

@@ -60,13 +60,13 @@ fun ReusableEventCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(110.dp),
+                .height(90.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .aspectRatio(0.8f, matchHeightConstraintsFirst = true)
+                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
                     .background(Color.LightGray)
                     .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
             ) {
@@ -81,7 +81,7 @@ fun ReusableEventCard(
                 }
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             Column(
                 modifier = Modifier.weight(1f),
@@ -89,11 +89,11 @@ fun ReusableEventCard(
             ) {
                 Text(
                     text = headliner,
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = contentColor
                     ),
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
@@ -130,7 +130,7 @@ fun ReusableEventCard(
                 }
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
 
             Row(
                 modifier = Modifier
@@ -144,7 +144,7 @@ fun ReusableEventCard(
                     color = contentColor.copy(alpha = 0.7f)
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
