@@ -23,7 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +43,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -125,6 +129,8 @@ fun EventDetailScreen(
                     EventDetailContent(
                         event = event!!,
                         artists = artists,
+                        isFavourited = viewModel.isFavourited.collectAsState().value,
+                        onFavouriteClick = { viewModel.toggleFavourite(event!!.docId) },
                         onShareClick = { shareEvent(context, event!!) },
                         onTicketClick = { event!!.ticketmasterUrl?.let { openUrl(context, it) } },
                         onArtistClick = { artistId ->
@@ -151,23 +157,48 @@ fun EventDetailContent(
     artists: List<Artist>,
     onShareClick: () -> Unit,
     onTicketClick: () -> Unit,
-    onArtistClick: (String) -> Unit
+    onArtistClick: (String) -> Unit,
+    isFavourited: Boolean,
+    onFavouriteClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AsyncImage(
-            model = event.eventImage16x9 ?: event.eventImage3x2,
-            contentDescription = "Event image",
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(16f / 9f)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentScale = ContentScale.Crop,
-            error = painterResource(id = android.R.drawable.ic_menu_report_image)
-        )
+        ) {
+            AsyncImage(
+                model = event.eventImage16x9 ?: event.eventImage3x2,
+                contentDescription = "Event image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = android.R.drawable.ic_menu_report_image)
+            )
+
+            IconButton(
+                onClick = onFavouriteClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = if (isFavourited) Icons.Filled.Favorite else Icons.Outlined.Favorite,
+                    contentDescription = if (isFavourited) "Remove from favourites" else "Add to favourites",
+                    tint = if (isFavourited) Color.Red else Color.White,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .shadow(4.dp, CircleShape)
+                )
+            }
+        }
+
 
         Row(
             modifier = Modifier
