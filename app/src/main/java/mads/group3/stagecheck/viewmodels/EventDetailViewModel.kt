@@ -1,17 +1,21 @@
 package mads.group3.stagecheck.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import mads.group3.stagecheck.common.repositories.FavouritesRepository
 import mads.group3.stagecheck.models.Artist
 import mads.group3.stagecheck.models.Event
 
 class EventDetailViewModel(
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val favouritesRepo: FavouritesRepository = FavouritesRepository()
 ) : ViewModel() {
     private val _event = MutableStateFlow<Event?>(null)
     val event: StateFlow<Event?> = _event.asStateFlow()
@@ -24,6 +28,9 @@ class EventDetailViewModel(
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
+
+    private val _isFavourited = MutableStateFlow(false)
+    val isFavourited: StateFlow<Boolean> = _isFavourited.asStateFlow()
 
     private var listenerRegistration: ListenerRegistration? = null
     private var artistsListener: ListenerRegistration? = null
@@ -55,6 +62,9 @@ class EventDetailViewModel(
                     }
                 }
             }
+        viewModelScope.launch {
+            _isFavourited.value = favouritesRepo.isFavourite(eventId)
+        }
     }
 
     private fun loadArtists(artistIds: List<String>) {
@@ -72,6 +82,22 @@ class EventDetailViewModel(
             .addOnFailureListener {
                 _artists.value = emptyList()
             }
+    }
+
+    fun toggleFavourite(eventId: String) {
+        viewModelScope.launch {
+            try {
+                if (_isFavourited.value) {
+                    favouritesRepo.removeFavourite(eventId)
+                    _isFavourited.value = false
+                } else {
+                    favouritesRepo.addFavourite(eventId)
+                    _isFavourited.value = true
+                }
+            } catch (e: Exception) {
+                _error.value = "Failed to updated favourites: ${e.message}"
+            }
+        }
     }
 
     override fun onCleared() {

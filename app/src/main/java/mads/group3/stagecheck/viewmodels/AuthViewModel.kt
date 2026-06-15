@@ -3,25 +3,53 @@ package mads.group3.stagecheck.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import mads.group3.stagecheck.models.User
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState
 
     fun checkSignedIn() {
+        val currentUser = auth.currentUser
         _uiState.value = _uiState.value.copy(
-            currentUser = auth.currentUser?.email
+            currentUser = currentUser?.email
         )
+
+        currentUser?.let { user ->
+            viewModelScope.launch {
+                ensureUserDocExists(user.uid, user.email ?: "")
+            }
+        }
+    }
+
+    private suspend fun ensureUserDocExists(uid: String, email: String) {
+        try {
+            val docRef = firestore.collection("users").document(uid)
+            val snapshot = docRef.get().await()
+            if (!snapshot.exists()) {
+                val user = User(email = email, createdAt = Timestamp.now())
+                docRef.set(user).await()
+                Log.d("AuthViewModel - ensureUserDocExists", "Created missing user doc for $uid")
+            }
+        } catch (e: Exception) {
+            e.message?.let {
+                Log.e("AuthViewModel - ensureUserDocExists", it)
+            }
+        }
     }
 
     fun signIn(email: String, password: String) {
@@ -35,10 +63,12 @@ class AuthViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
             try {
-                auth.signInWithEmailAndPassword(email, password).await()
+                val authResult = auth.signInWithEmailAndPassword(email, password).await()
+                val uid = authResult.user?.uid ?: throw Exception("User not found")
+                ensureUserDocExists(uid, email)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    currentUser = auth.currentUser?.email,
+                    currentUser = email,
                     errorMessage = null
                 )
             } catch (e: Exception) {
@@ -68,10 +98,13 @@ class AuthViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
             try {
-                auth.createUserWithEmailAndPassword(email, password).await()
+                val authResult = auth.createUserWithEmailAndPassword(email, password).await()
+                val uid = authResult.user?.uid ?: throw Exception("User creation failed")
+                val user = User(email = email, createdAt = Timestamp.now())
+                firestore.collection("users").document(uid).set(user).await()
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    currentUser = auth.currentUser?.email,
+                    currentUser = email,
                     errorMessage = null
                 )
             } catch (e: Exception) {
