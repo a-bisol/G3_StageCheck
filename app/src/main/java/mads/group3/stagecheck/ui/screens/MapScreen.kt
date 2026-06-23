@@ -1,5 +1,6 @@
 package mads.group3.stagecheck.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -61,7 +62,13 @@ fun MapScreen(navController: NavController) {
                             val position = LatLng(geoPoint.latitude, geoPoint.longitude)
                             Marker(
                                 state = MarkerState(position = position),
-                                title = venue.name ?: "Venue"
+                                title = venue.name ?: "Venue",
+                                tag = venue.id,
+                                onClick = { marker ->
+                                    val venueId = marker.tag as? String
+                                    Log.d("Marker tapped", venueId ?: "No venue ID")
+                                    false
+                                }
                             )
                         }
                     }
