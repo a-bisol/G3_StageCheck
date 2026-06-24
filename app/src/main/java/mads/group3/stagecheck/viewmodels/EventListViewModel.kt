@@ -56,6 +56,7 @@ class EventListViewModel : ViewModel() {
 
                 val snapshot = query.get().await()
                 val eventList = snapshot.toObjects(Event::class.java)
+                    .filter { it.status?.lowercase() != "cancelled" }
                 _events.value = eventList
 
                 lastDoc = snapshot.documents.lastOrNull()
@@ -86,6 +87,7 @@ class EventListViewModel : ViewModel() {
 
                 val snapshot = query.get().await()
                 val newEvents = snapshot.toObjects(Event::class.java)
+                    .filter { it.status?.lowercase() != "cancelled" }
 
                 if (newEvents.isNotEmpty()) {
                     _events.value += newEvents
