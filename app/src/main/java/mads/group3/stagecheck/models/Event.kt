@@ -62,6 +62,9 @@ data class Event(
     @PropertyName("eventImage16x9")
     val eventImage16x9: String? = null,
 
+    @PropertyName("venueDirectoryId")
+    val venueDirectoryId: String? = null,
+
     @PropertyName("lastSyncedAt")
     val lastSyncedAt: Timestamp? = null
 )

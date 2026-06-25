@@ -1,0 +1,83 @@
+package mads.group3.stagecheck.common
+
+object StateCodeMapper {
+    private val nameToCode = mapOf(
+        "Alberta" to "AB",
+        "British Columbia" to "BC",
+        "Manitoba" to "MB",
+        "New Brunswick" to "NB",
+        "Newfoundland and Labrador" to "NL",
+        "Northwest Territories" to "NT",
+        "Nova Scotia" to "NS",
+        "Nunavut" to "NU",
+        "Ontario" to "ON",
+        "Prince Edward Island" to "PE",
+        "Quebec" to "QC",
+        "Saskatchewan" to "SK",
+        "Yukon" to "YT",
+
+        "Alabama" to "AL",
+        "Alaska" to "AK",
+        "Arizona" to "AZ",
+        "Arkansas" to "AR",
+        "California" to "CA",
+        "Colorado" to "CO",
+        "Connecticut" to "CT",
+        "Delaware" to "DE",
+        "Florida" to "FL",
+        "Georgia" to "GA",
+        "Hawaii" to "HI",
+        "Idaho" to "ID",
+        "Illinois" to "IL",
+        "Indiana" to "IN",
+        "Iowa" to "IA",
+        "Kansas" to "KS",
+        "Kentucky" to "KY",
+        "Louisiana" to "LA",
+        "Maine" to "ME",
+        "Maryland" to "MD",
+        "Massachusetts" to "MA",
+        "Michigan" to "MI",
+        "Minnesota" to "MN",
+        "Mississippi" to "MS",
+        "Missouri" to "MO",
+        "Montana" to "MT",
+        "Nebraska" to "NE",
+        "Nevada" to "NV",
+        "New Hampshire" to "NH",
+        "New Jersey" to "NJ",
+        "New Mexico" to "NM",
+        "New York" to "NY",
+        "North Carolina" to "NC",
+        "North Dakota" to "ND",
+        "Ohio" to "OH",
+        "Oklahoma" to "OK",
+        "Oregon" to "OR",
+        "Pennsylvania" to "PA",
+        "Rhode Island" to "RI",
+        "South Carolina" to "SC",
+        "South Dakota" to "SD",
+        "Tennessee" to "TN",
+        "Texas" to "TX",
+        "Utah" to "UT",
+        "Vermont" to "VT",
+        "Virginia" to "VA",
+        "Washington" to "WA",
+        "West Virginia" to "WV",
+        "Wisconsin" to "WI",
+        "Wyoming" to "WY",
+
+        "District of Columbia" to "DC",
+        "Puerto Rico" to "PR",
+        "Guam" to "GU",
+        "American Samoa" to "AS",
+        "U.S. Virgin Islands" to "VI",
+        "Northern Mariana Islands" to "MP"
+    )
+
+    fun getCode(fullName: String?): String? {
+        if (fullName.isNullOrBlank()) return null
+        return nameToCode[fullName.trim()]
+            ?: nameToCode[fullName.trim().lowercase().replaceFirstChar { it.uppercase() }]
+    }
+}
