@@ -18,5 +18,8 @@ data class Artist(
     val image16x9: String? = null,
 
     @PropertyName("lastSyncedAt")
-    val lastSyncedAt: Timestamp? = null
+    val lastSyncedAt: Timestamp? = null,
+
+    @PropertyName("bio")
+    val bio: String? = null
 )

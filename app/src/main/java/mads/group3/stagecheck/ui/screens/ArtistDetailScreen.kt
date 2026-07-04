@@ -52,7 +52,7 @@ fun ArtistDetailScreen(
 
     Scaffold(
         topBar = {
-             TopAppBar(
+            TopAppBar(
                 title = {
                     Text(artist?.name ?: "Artist Details")
                 },
@@ -132,11 +132,19 @@ fun ArtistDetailContent(artist: Artist) {
                 color = MaterialTheme.colorScheme.background
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Bio for ${artist.name ?: "the artist"} will be added soon.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
-            )
+            if (artist.bio.isNullOrBlank()) {
+                Text(
+                    text = "Bio for ${artist.name ?: "the artist"} will be added soon.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+            } else {
+                Text(
+                    text = artist.bio,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                )
+            }
         }
     }
 }
