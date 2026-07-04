@@ -15,6 +15,7 @@ import mads.group3.stagecheck.models.ExtendedSearchOptions
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.collections.emptyList
 
 class SearchViewModel : ViewModel() {
@@ -40,17 +41,19 @@ class SearchViewModel : ViewModel() {
                 if (settings.artist.isNotBlank()) artistParts.add(settings.artist)
                 val artist = if (artistParts.isNotEmpty()) artistParts.joinToString(" ") else null
 
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
                 val startDate = settings.startDate?.let { dateFormat.format(Date(it)) }
                 val endDate = settings.endDate?.let {dateFormat.format(Date(it))}
 
                 val request = SearchRequest(
                     city = settings.city.takeIf{it.isNotBlank()},
-                    radius = settings.distance,
+                    radius = if (settings.unit != "none") settings.distance else null,
                     unit = if (settings.unit != "none") settings.unit else null,
                     startDate = startDate,
                     endDate = endDate,
-                    limit = 15,
+                    limit = 25,
                     classificationName = "Music",
                     artist = artist
                 )
