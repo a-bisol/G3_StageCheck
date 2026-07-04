@@ -63,7 +63,8 @@ class SearchViewModel : ViewModel() {
                     _error.value = "Search failed"
                 }
             } catch (e: Exception) {
-                e.message?.let { Log.e("SearchViewModel - search", it) }
+                e.message?.let { Log.e("SearchViewModel-search", it) }
+                Log.e("SearchViewModel", e.toString())
                 _error.value = e.message
             } finally {
                 _isLoading.value = false
