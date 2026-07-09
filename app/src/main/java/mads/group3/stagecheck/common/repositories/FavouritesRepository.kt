@@ -16,12 +16,12 @@ class FavouritesRepository(
         .document(userId)
         .collection("favourites")
 
-    suspend fun addFavourite(eventId: String) {
+    fun addFavourite(eventId: String) {
         val userId = currentUserId ?: throw IllegalStateException("User not logged in")
         favouritesCollection(userId).document(eventId).set(mapOf("eventId" to eventId))
     }
 
-    suspend fun removeFavourite(eventId: String) {
+    fun removeFavourite(eventId: String) {
         val userId = currentUserId ?: throw IllegalStateException("User not logged in")
         favouritesCollection(userId).document(eventId).delete()
     }
