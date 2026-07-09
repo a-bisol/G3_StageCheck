@@ -1,5 +1,6 @@
 package mads.group3.stagecheck.common.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,13 +42,13 @@ import java.util.Locale
 
 @Composable
 fun ReusableEventCard(
-    imageUrl: String?,
     headliner: String,
     venue: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    imageUrl: String?,
     localDate: String? = null, // YYYY-MM-DD
     localTime: String? = null, // HH:MM:SS
-    modifier: Modifier = Modifier,
     cardBackgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
 ) {
@@ -161,14 +162,15 @@ fun ReusableEventCard(
 
 fun formatEventDateTime(dateStr: String?, timeStr: String?): String? {
     if (dateStr == null || timeStr == null) return null
-    return try {
+    try {
         val combinedDateTime = "$dateStr $timeStr"
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val outputFormat = SimpleDateFormat("MMM dd ' @ ' hh:mm a", Locale.getDefault())
         val dateTime = inputFormat.parse(combinedDateTime)
-        dateTime?.let { outputFormat.format(it) }
+        return dateTime?.let { outputFormat.format(it) }
     } catch (e: Exception) {
-        null
+        e.message?.let { Log.e("EventCard - formatDT", it) }
+        return null
     }
 }
 

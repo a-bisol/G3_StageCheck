@@ -60,7 +60,6 @@ class ArtistDetailViewModel(
     }
 
     fun toggleFollow(artistId: String) {
-        val userId = currentUserId ?: return //Figure out handling unlogged user
         viewModelScope.launch {
             try {
                 if (_isFollowing.value) {
