@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +31,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -92,7 +98,11 @@ fun ArtistDetailScreen(
                 }
 
                 artist != null -> {
-                    ArtistDetailContent(artist = artist!!)
+                    ArtistDetailContent(
+                        artist = artist!!,
+                        isFollowing = viewModel.isFollowing.collectAsState().value,
+                        onFollowClick = { viewModel.toggleFollow(artist!!.id) }
+                    )
                 }
 
                 else -> {
@@ -104,22 +114,49 @@ fun ArtistDetailScreen(
 }
 
 @Composable
-fun ArtistDetailContent(artist: Artist) {
+fun ArtistDetailContent(
+    artist: Artist,
+    isFollowing: Boolean,
+    onFollowClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AsyncImage(
-            model = artist.image16x9 ?: artist.image3x2,
-            contentDescription = artist.name,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(16f / 9f)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentScale = ContentScale.Crop,
-            error = painterResource(id = android.R.drawable.ic_menu_report_image)
-        )
+        ) {
+            AsyncImage(
+                model = artist.image16x9 ?: artist.image3x2,
+                contentDescription = artist.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = android.R.drawable.ic_menu_report_image)
+            )
+
+            IconButton(
+                onClick = onFollowClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = if (isFollowing) Icons.Filled.Star else Icons.Outlined.Star,
+                    contentDescription = if (isFollowing) "Unfollow artist" else "Follow artist",
+                    tint = if (isFollowing) Color.Yellow else Color.White,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .shadow(4.dp, CircleShape)
+                )
+            }
+        }
+
 
         Spacer(modifier = Modifier.height(12.dp))
 

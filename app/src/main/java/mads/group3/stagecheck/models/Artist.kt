@@ -21,5 +21,8 @@ data class Artist(
     val lastSyncedAt: Timestamp? = null,
 
     @PropertyName("bio")
-    val bio: String? = null
+    val bio: String? = null,
+
+    @PropertyName("following")
+    val following: List<String>? = null
 )
