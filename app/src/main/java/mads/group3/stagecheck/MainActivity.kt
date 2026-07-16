@@ -3,7 +3,9 @@ package mads.group3.stagecheck
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -41,10 +43,36 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val notificationPermsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.d("MainActivity", "Notification permission granted: $isGranted")
+        } else {
+            Log.w("MainActivity", "Notification permission denied")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LocationManager.initialize(this)
         enableEdgeToEdge()
+
+        if (!hasLocationPermissions()) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        } else {
+            LocationManager.fetchLocation(this)
+        }
+
+        if (!hasNotificationPermission()) {
+            notificationPermsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
         setContent {
             StageCheckTheme {
                 val authViewModel: AuthViewModel = viewModel()
@@ -81,17 +109,18 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        if (!hasLocationPermissions()) {
-            permissionLauncher.launch(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ))
-        } else {
-            LocationManager.fetchLocation(this)
-        }
     }
 
+    private fun hasNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
 
     private fun hasLocationPermissions(): Boolean {
         return ActivityCompat.checkSelfPermission(

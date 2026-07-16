@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.messaging)
     implementation(libs.logging.interceptor)
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)

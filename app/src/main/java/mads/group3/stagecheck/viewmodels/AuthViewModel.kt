@@ -8,7 +8,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -52,6 +54,19 @@ class AuthViewModel(
         }
     }
 
+    private suspend fun saveFcmTokenForCurrentUser() {
+        val currentUser = auth.currentUser ?: return
+        try {
+            val token = FirebaseMessaging.getInstance().getToken().await()
+            firestore.collection("users").document(currentUser.uid)
+                .update("fcmTokens", FieldValue.arrayUnion(token))
+                .await()
+            Log.d("AuthVM - saveFcmToken", "FCM Token saved: $token")
+        } catch (e: Exception) {
+            e.message?.let { Log.e("AuthVM - saveFcmToken", it) }
+        }
+    }
+
     fun signIn(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = _uiState.value.copy(
@@ -66,6 +81,7 @@ class AuthViewModel(
                 val authResult = auth.signInWithEmailAndPassword(email, password).await()
                 val uid = authResult.user?.uid ?: throw Exception("User not found")
                 ensureUserDocExists(uid, email)
+                saveFcmTokenForCurrentUser()
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     currentUser = email,
@@ -102,6 +118,7 @@ class AuthViewModel(
                 val uid = authResult.user?.uid ?: throw Exception("User creation failed")
                 val user = User(email = email, createdAt = Timestamp.now())
                 firestore.collection("users").document(uid).set(user).await()
+                saveFcmTokenForCurrentUser()
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     currentUser = email,
