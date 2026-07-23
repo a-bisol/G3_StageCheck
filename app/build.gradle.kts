@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.logging.interceptor)
     implementation(libs.maps.compose)
+    implementation(libs.play.services.ads)
     implementation(libs.play.services.location)
     implementation(libs.retrofit)
     testImplementation(libs.junit)
